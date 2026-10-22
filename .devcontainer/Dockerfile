@@ -1,2 +1,4 @@
 FROM mcr.microsoft.com/devcontainers/java:1-17-bookworm
-RUN rm -f /etc/apt/sources.list.d/yarn.list
+RUN rm -f /etc/apt/sources.list.d/yarn.list \
+    && apt-get update && apt-get install -y maven \
+    && rm -rf /var/lib/apt/lists/*
