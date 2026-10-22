@@ -22,21 +22,22 @@ public class SignalSimulator {
     public double[] generate(FaultType type) {
         double[] signal = new double[NUM_SAMPLES];
 
-        // Small random variation so no two signals are identical
         double amplitude = 1.0 + (random.nextDouble() - 0.5) * 0.1;
-        double noise = 0.02 + random.nextDouble() * 0.02;
+        double noise = 0.03 + random.nextDouble() * 0.07;
 
-        // Fault settings
-        double h5 = 0.08 + random.nextDouble() * 0.17;
-        double h7 = 0.05 + random.nextDouble() * 0.10;
-        double modIndex = 0.08 + random.nextDouble() * 0.12;
+        // Severity: 0.2 = barely visible fault, 1.0 = strong fault
+        double severity = 0.2 + random.nextDouble() * 0.8;
+
+        double h5 = (0.08 + random.nextDouble() * 0.17) * severity;
+        double h7 = (0.05 + random.nextDouble() * 0.10) * severity;
+        double modIndex = (0.08 + random.nextDouble() * 0.12) * severity;
         double modFreq = 18.75;
         int sagStart = 200 + random.nextInt(300);
         int sagLength = 200 + random.nextInt(200);
-        double sagFactor = 0.4 + random.nextDouble() * 0.4;
+        double sagFactor = 1.0 - (0.2 + random.nextDouble() * 0.4) * severity;
 
         if (type == FaultType.OVERVOLTAGE) {
-            amplitude *= 1.15 + random.nextDouble() * 0.25;
+            amplitude *= 1.0 + (0.15 + random.nextDouble() * 0.25) * severity;
         }
 
         for (int i = 0; i < NUM_SAMPLES; i++) {
@@ -67,7 +68,7 @@ public class SignalSimulator {
         if (type == FaultType.TRANSIENT_SPIKES) {
             int spikes = 3 + random.nextInt(6);
             for (int s = 0; s < spikes; s++) {
-                double size = 1.0 + random.nextDouble() * 1.5;
+                double size = (1.0 + random.nextDouble() * 1.5) * severity;
                 signal[random.nextInt(NUM_SAMPLES)] += random.nextBoolean() ? size : -size;
             }
         }
